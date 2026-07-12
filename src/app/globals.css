@@ -1,13 +1,41 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
+  /* Canvas & surfaces */
+  --background: #f6f7f9;
   --surface: #ffffff;
-  --content-bg: #f1f5f9;
-  --color-primary: #16a34a;
-  --color-accent: #0ea5e9;
-  --color-warning: #f59e0b;
+  --surface-hover: #f1f3f6;
+  --content-bg: #f6f7f9;
+
+  /* Text */
+  --foreground: #14181f;
+  --foreground-secondary: #4b5565;
+  --foreground-muted: #8a93a3;
+
+  /* Borders */
+  --border: #e6e8ec;
+  --border-strong: #d6dae0;
+
+  /* Brand (kept green — same brand identity, refined shade) */
+  --primary: #15803d;
+  --primary-hover: #12692f;
+  --primary-soft: #e9f7ef;
+  --primary-soft-foreground: #0f5d2c;
+
+  /* Informational accent */
+  --accent: #2563eb;
+  --accent-soft: #eaf1fe;
+
+  /* Status */
+  --warning: #d97706;
+  --warning-soft: #fef3e2;
+  --danger: #dc2626;
+  --danger-soft: #fdecec;
+
+  /* Legacy aliases — kept so any existing reference still resolves */
+  --color-primary: var(--primary);
+  --color-accent: var(--accent);
+  --color-warning: var(--warning);
 }
 
 @theme inline {
@@ -25,5 +53,15 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--primary-soft);
+  color: var(--primary-soft-foreground);
+}
+
+* {
+  scrollbar-color: var(--border-strong) transparent;
 }

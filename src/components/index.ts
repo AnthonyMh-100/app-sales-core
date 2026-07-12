@@ -4,3 +4,6 @@ export * from "./footer/Footer";
 export * from "./headers/Header";
 export * from "./pagination/PaginationTable";
 export * from "./table/TableData";
+export * from "./sidebar/Sidebar";
+export * from "./topbar/TopBar";
+export * from "./layout/AppShell";

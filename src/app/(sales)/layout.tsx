@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { Header, Footer } from "@/src/components";
+import { AppShell } from "@/src/components";
 import { auth } from "@/src/auth.config";
 import { redirect } from "next/navigation";
 import { SessionProvider } from "next-auth/react";
@@ -19,12 +19,8 @@ export default async function SalesLayout({
   if (!session) redirect("/auth/login");
 
   return (
-    <>
-      <SessionProvider session={session}>
-        <Header />
-        {children}
-        <Footer />
-      </SessionProvider>
-    </>
+    <SessionProvider session={session}>
+      <AppShell>{children}</AppShell>
+    </SessionProvider>
   );
 }
