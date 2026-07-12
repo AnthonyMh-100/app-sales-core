@@ -1,0 +1,180 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Company {
+  id        String   @id @default(uuid())
+  name      String?
+  code      String?  @unique
+  address   String?
+  phone     String?
+  email     String?
+  logoUrl   String?
+  username  String   @unique
+  password  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  categories Category[]
+  customers  Customer[]
+  products   Product[]
+  sales      Sale[]
+
+  @@map("companies")
+}
+
+model Customer {
+  id             String       @id @default(uuid())
+  firstName      String
+  lastName       String
+  documentType   DocumentType
+  documentNumber String       @unique
+  email          String?
+  phone          String?
+  address        String?
+  active         Boolean     @default(true)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  company   Company @relation(fields: [companyId], references: [id])
+  companyId String
+
+  sales Sale[]
+
+  @@map("customers")
+}
+
+model Product {
+  id          String        @id @default(uuid())
+  name        String
+  description String?
+  price       Float
+  stock       Int           @default(0)
+  imgUrl      String?
+  imagePublicId String?
+  imageSecureUrl String?
+  imageFormat    String?
+  status      ProductStatus @default(ACTIVE)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  active      Boolean      @default(true)
+
+
+  company   Company @relation(fields: [companyId], references: [id])
+  companyId String
+
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId String
+
+  saleDetails SaleDetail[]
+
+  @@map("products")
+}
+
+model Category {
+  id        String   @id @default(uuid())
+  name      String
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  company   Company @relation(fields: [companyId], references: [id])
+  companyId String
+
+  products Product[]
+
+  @@map("categories")
+}
+
+model Sale {
+  id            String        @id @default(uuid())
+  code          String        @unique
+  status        SaleStatus    @default(PENDING)
+  paymentStatus PaymentStatus @default(UNPAID)
+  subtotal      Float
+  tax           Float?
+  total         Float
+  notes         String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  company   Company @relation(fields: [companyId], references: [id])
+  companyId String
+
+  customer   Customer @relation(fields: [customerId], references: [id])
+  customerId String
+
+  saleDetails SaleDetail[]
+  payments    Payment[]
+
+  @@map("sales")
+}
+
+model SaleDetail {
+  id        String @id @default(uuid())
+  quantity  Int
+  unitPrice Float
+  subtotal  Float
+
+  sale   Sale   @relation(fields: [saleId], references: [id])
+  saleId String
+
+  product   Product @relation(fields: [productId], references: [id])
+  productId String
+
+  @@map("sale_details")
+}
+
+model Payment {
+  id        String        @id @default(uuid())
+  method    PaymentMethod
+  amount    Float
+  createdAt DateTime      @default(now())
+
+  sale   Sale   @relation(fields: [saleId], references: [id])
+  saleId String
+
+  @@map("payments")
+}
+
+enum ProductStatus {
+  ACTIVE
+  INACTIVE
+  OUT_OF_STOCK
+}
+
+enum DocumentType {
+  DNI
+  RUC
+  CE
+  OTHER
+}
+
+enum SaleStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  UNPAID
+  PARTIAL
+  PAID
+}
+
+enum PaymentMethod {
+  CASH
+  CARD
+  TRANSFER
+}
